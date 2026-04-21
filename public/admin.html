@@ -1,46 +1,113 @@
-<div class="space-y-4">
-    <input type="text" id="name" placeholder="العنوان الرئيسي (مثلاً: تواصل معنا أو اسم المنتج)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
-    <input type="text" id="price" placeholder="السعر أو نص فرعي (اختياري)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
-    <input type="text" id="image" placeholder="رابط الصورة الخلفية (رابط مباشر)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
-    <input type="url" id="targetUrl" placeholder="رابط التوجه (واتساب، رابط شراء، موقع آخر)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
-    
-    <div class="flex items-center justify-between bg-slate-800 p-4 rounded-xl">
-        <span class="text-slate-400">لون الهوية:</span>
-        <input type="color" id="btnColor" value="#c5a059" class="w-16 h-8 rounded cursor-pointer">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | Elias Systems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background: #0f172a; color: #f8fafc; }
+        .glass-input { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(71, 85, 105, 0.5); transition: all 0.3s ease; }
+        .glass-input:focus { border-color: #f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.1); outline: none; }
+        .gradient-btn { background: linear-gradient(135deg, #f59e0b, #d97706); transition: transform 0.2s; }
+        .gradient-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-extrabold text-amber-500 mb-2">إدارة العروض الذكية</h1>
+            <p class="text-slate-400 text-sm">تحكم في محتوى صفحة الهبوط بضغطة زر</p>
+        </div>
+
+        <div class="bg-slate-900/50 backdrop-blur-xl p-6 rounded-3xl border border-slate-800 shadow-2xl">
+            <div class="space-y-6">
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-2 mr-2 uppercase tracking-widest">العنوان الرئيسي</label>
+                    <input type="text" id="name" placeholder="مثلاً: عطر لافيرن الملكي" class="w-full glass-input p-4 rounded-2xl text-white">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-2 mr-2 uppercase tracking-widest">السعر أو النص الفرعي</label>
+                    <input type="text" id="price" placeholder="مثلاً: 250 (أو اتركه فارغاً للإخفاء)" class="w-full glass-input p-4 rounded-2xl text-white">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-2 mr-2 uppercase tracking-widest">رابط الصورة الخلفية</label>
+                    <input type="text" id="image" placeholder="ألصق رابط الصورة المباشر هنا" class="w-full glass-input p-4 rounded-2xl text-white text-left" dir="ltr">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-2 mr-2 uppercase tracking-widest">رابط التوجه (الهدف)</label>
+                    <input type="url" id="targetUrl" placeholder="رابط شراء، واتساب، أو موقع آخر" class="w-full glass-input p-4 rounded-2xl text-white text-left" dir="ltr">
+                </div>
+
+                <div class="flex items-center justify-between bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50">
+                    <span class="text-sm font-medium text-slate-300">لون هوية العرض</span>
+                    <input type="color" id="btnColor" value="#c5a059" class="w-16 h-10 rounded-lg cursor-pointer bg-transparent border-none">
+                </div>
+
+                <button onclick="saveData()" id="saveBtn" class="w-full gradient-btn py-5 rounded-2xl font-extrabold text-slate-950 shadow-lg shadow-amber-900/20">
+                    تحديث صفحة الهبوط الآن
+                </button>
+            </div>
+        </div>
+
+        <p class="text-center mt-8 text-slate-600 text-[10px] tracking-[0.3em] uppercase">Elias Systems © 2026</p>
     </div>
-    
-    <button onclick="saveData()" id="saveBtn" class="w-full bg-amber-600 hover:bg-amber-500 py-4 rounded-xl font-bold transition-colors">تحديث الصفحة الآن</button>
-</div>
 
-<script>
-async function saveData() {
-    const btn = document.getElementById('saveBtn');
-    btn.innerText = "جاري الحفظ...";
-    
-    const data = {
-        name: document.getElementById('name').value,
-        price: document.getElementById('price').value,
-        image: document.getElementById('image').value,
-        targetUrl: document.getElementById('targetUrl').value,
-        btnColor: document.getElementById('btnColor').value
-    };
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        async function saveData() {
+            const btn = document.getElementById('saveBtn');
+            const originalText = btn.innerText;
+            btn.innerText = "جاري المزامنة...";
+            btn.disabled = true;
 
-    try {
-        const res = await fetch('/api/update-config', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
-        
-        if(res.ok) {
-            alert('✅ تم تحديث الصفحة بنجاح!');
-        } else {
-            alert('❌ حدث خطأ في الحفظ');
+            const data = {
+                name: document.getElementById('name').value,
+                price: document.getElementById('price').value,
+                image: document.getElementById('image').value,
+                targetUrl: document.getElementById('targetUrl').value,
+                btnColor: document.getElementById('btnColor').value
+            };
+
+            try {
+                const res = await fetch('/api/update-config', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+
+                if(res.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم التحديث!',
+                        text: 'تغيرت صفحة الهبوط بنجاح الآن',
+                        confirmButtonColor: '#f59e0b',
+                        background: '#1e293b',
+                        color: '#fff'
+                    });
+                } else {
+                    throw new Error();
+                }
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'عذراً فهد',
+                    text: 'حدث خطأ أثناء محاولة الاتصال بالسيرفر',
+                    confirmButtonColor: '#f59e0b',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         }
-    } catch (e) {
-        alert('❌ تعذر الاتصال بالسيرفر');
-    } finally {
-        btn.innerText = "تحديث الصفحة الآن";
-    }
-}
-</script>
+    </script>
+</body>
+</html>
