@@ -7,16 +7,16 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/api/update-config', (req, res) => {
-    const { name, price, image, productUrl, btnColor } = req.body;
+    const { name, price, image, targetUrl, btnColor } = req.body;
 
     const finalConfig = {
-        name,
-        price,
-        image,
-        url: productUrl,
+        name: name || "اسم المنتج",
+        price: price || "",
+        image: image || "", // يقبل أي رابط صورة مباشر
+        url: targetUrl || "#", // يقبل واتساب، سلة، زد، أو أي موقع
         btnColor: btnColor || '#c5a059',
-        currency: 'ر.س',
-        pid: Date.now() // معرف وهمي
+        currency: price ? 'ر.س' : '', // تظهر العملة فقط إذا وجد سعر
+        pid: Date.now()
     };
 
     try {
