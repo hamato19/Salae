@@ -1,0 +1,5 @@
+node_modules/
+npm-debug.log
+.env
+# استثني config.json إذا كنت تريد أن يبدأ كل عميل بملف نظيف
+# public/config.json
