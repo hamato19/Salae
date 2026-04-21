@@ -1,29 +1,46 @@
 <div class="space-y-4">
-    <input type="text" id="name" placeholder="اسم المنتج (مثلاً: عطر رصوف الفاخر)" class="w-full bg-slate-800 p-4 rounded-xl outline-none">
-    <input type="text" id="price" placeholder="السعر (مثلاً: 250)" class="w-full bg-slate-800 p-4 rounded-xl outline-none">
-    <input type="text" id="image" placeholder="رابط صورة المنتج (انسخ رابط الصورة من سلة)" class="w-full bg-slate-800 p-4 rounded-xl outline-none">
-    <input type="url" id="productUrl" placeholder="رابط الشراء من سلة" class="w-full bg-slate-800 p-4 rounded-xl outline-none">
-    <input type="color" id="btnColor" value="#c5a059" class="w-full h-12 rounded-xl mt-2 cursor-pointer">
+    <input type="text" id="name" placeholder="العنوان الرئيسي (مثلاً: تواصل معنا أو اسم المنتج)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
+    <input type="text" id="price" placeholder="السعر أو نص فرعي (اختياري)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
+    <input type="text" id="image" placeholder="رابط الصورة الخلفية (رابط مباشر)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
+    <input type="url" id="targetUrl" placeholder="رابط التوجه (واتساب، رابط شراء، موقع آخر)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
     
-    <button onclick="saveManual()" id="saveBtn" class="w-full bg-amber-600 py-4 rounded-xl font-bold">تحديث الصفحة الآن</button>
+    <div class="flex items-center justify-between bg-slate-800 p-4 rounded-xl">
+        <span class="text-slate-400">لون الهوية:</span>
+        <input type="color" id="btnColor" value="#c5a059" class="w-16 h-8 rounded cursor-pointer">
+    </div>
+    
+    <button onclick="saveData()" id="saveBtn" class="w-full bg-amber-600 hover:bg-amber-500 py-4 rounded-xl font-bold transition-colors">تحديث الصفحة الآن</button>
 </div>
 
 <script>
-async function saveManual() {
+async function saveData() {
+    const btn = document.getElementById('saveBtn');
+    btn.innerText = "جاري الحفظ...";
+    
     const data = {
         name: document.getElementById('name').value,
         price: document.getElementById('price').value,
         image: document.getElementById('image').value,
-        productUrl: document.getElementById('productUrl').value,
+        targetUrl: document.getElementById('targetUrl').value,
         btnColor: document.getElementById('btnColor').value
     };
 
-    const res = await fetch('/api/update-config', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-    });
-    
-    if(res.ok) alert('✅ تم تحديث الصفحة بنجاح!');
+    try {
+        const res = await fetch('/api/update-config', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        if(res.ok) {
+            alert('✅ تم تحديث الصفحة بنجاح!');
+        } else {
+            alert('❌ حدث خطأ في الحفظ');
+        }
+    } catch (e) {
+        alert('❌ تعذر الاتصال بالسيرفر');
+    } finally {
+        btn.innerText = "تحديث الصفحة الآن";
+    }
 }
 </script>
