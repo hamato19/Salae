@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم صفحة الهبوط | رصوف</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        input[type="color"] { appearance: none; border: none; width: 40px; height: 40px; cursor: pointer; background: none; }
+        input[type="color"]::-webkit-color-swatch { border-radius: 8px; border: 2px solid #fff; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="card w-full max-w-lg p-8 rounded-[2rem] shadow-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-amber-500 mb-2">إعدادات الصفحة</h1>
+            <p class="text-slate-400 text-sm">أدخل رابط منتج سلة لتحديث الصفحة تلقائياً</p>
+        </div>
+
+        <div class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">رابط المنتج من متجر سلة</label>
+                <input type="url" id="productUrl" 
+                    class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition outline-none" 
+                    placeholder="https://salla.sa/your-store/p-12345">
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700">
+                    <label class="block text-xs text-slate-400 mb-2 text-center">اللون الأساسي</label>
+                    <div class="flex justify-center">
+                        <input type="color" id="mainColor" value="#c5a059">
+                    </div>
+                </div>
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700">
+                    <label class="block text-xs text-slate-400 mb-2 text-center">لون الزر</label>
+                    <div class="flex justify-center">
+                        <input type="color" id="btnColor" value="#c5a059">
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="saveSettings()" id="saveBtn" 
+                class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 rounded-xl transition-all transform active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-amber-900/20">
+                <span>تحديث صفحة الهبوط الآن</span>
+            </button>
+
+            <div id="status" class="hidden text-center p-3 rounded-lg text-sm font-bold"></div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-700 text-center">
+            <a href="/" target="_blank" class="text-amber-500 hover:underline text-sm italic">عرض صفحة الهبوط ←</a>
+        </div>
+    </div>
+
+    <script>
+        async function saveSettings() {
+            const btn = document.getElementById('saveBtn');
+            const status = document.getElementById('status');
+            const productUrl = document.getElementById('productUrl').value;
+            const mainColor = document.getElementById('mainColor').value;
+            const btnColor = document.getElementById('btnColor').value;
+
+            if (!productUrl) {
+                showStatus('يرجى إدخال الرابط أولاً', 'bg-red-500/20 text-red-400');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="animate-spin">🌀</span> جاري سحب البيانات...';
+
+            try {
+                const response = await fetch('/api/update-config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productUrl, mainColor, btnColor })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showStatus('✅ تم تحديث بيانات المنتج بنجاح!', 'bg-green-500/20 text-green-400');
+                } else {
+                    showStatus('❌ ' + (result.error || 'حدث خطأ'), 'bg-red-500/20 text-red-400');
+                }
+            } catch (err) {
+                showStatus('❌ تعذر الاتصال بالسيرفر', 'bg-red-500/20 text-red-400');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'تحديث صفحة الهبوط الآن';
+            }
+        }
+
+        function showStatus(text, classes) {
+            const status = document.getElementById('status');
+            status.innerText = text;
+            status.className = `mt-4 text-center p-3 rounded-lg text-sm font-bold ${classes}`;
+            status.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

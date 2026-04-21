@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">العطر الفاخر | تجربة استثنائية</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --gold: #c5a059; --dark: #0a0a0a; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--dark); color: #fff; overflow-x: hidden; margin: 0; }
+        .font-serif { font-family: 'Amiri', serif; }
+        .gold-btn { background: linear-gradient(to right, var(--gold), #e2c58a); color: #000; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .parallax { background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover; }
+        
+        /* تأثير حلقة التحميل */
+        .loader-ring { width: 50px; height: 50px; border: 3px solid rgba(197, 160, 89, 0.2); border-radius: 50%; border-top-color: var(--gold); animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* تخصيص الألوان ديناميكياً */
+        .dynamic-bg { background-color: var(--gold); }
+        .dynamic-text { color: var(--gold); }
+        .dynamic-border { border-color: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen" class="fixed inset-0 z-[200] bg-[#0a0a0a] flex flex-col items-center justify-center transition-opacity duration-1000">
+        <div class="loader-ring mb-4"></div>
+        <p class="text-gold tracking-[0.2em] animate-pulse text-[10px] uppercase">Luxury is loading</p>
+    </div>
+
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div id="hero-bg" class="absolute inset-0 z-0 parallax opacity-40 scale-110 transition-transform duration-[4000ms]"></div>
+        
+        <div class="relative z-10 text-center px-4">
+            <h2 class="dynamic-text tracking-[0.4em] text-xs
