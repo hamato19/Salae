@@ -1,46 +1,132 @@
-<div class="space-y-4">
-    <input type="text" id="name" placeholder="العنوان الرئيسي (مثلاً: تواصل معنا أو اسم المنتج)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
-    <input type="text" id="price" placeholder="السعر أو نص فرعي (اختياري)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
-    <input type="text" id="image" placeholder="رابط الصورة الخلفية (رابط مباشر)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
-    <input type="url" id="targetUrl" placeholder="رابط التوجه (واتساب، رابط شراء، موقع آخر)" class="w-full bg-slate-800 p-4 rounded-xl outline-none text-white">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">جاري التحميل... | منصة العروض الحصرية</title>
     
-    <div class="flex items-center justify-between bg-slate-800 p-4 rounded-xl">
-        <span class="text-slate-400">لون الهوية:</span>
-        <input type="color" id="btnColor" value="#c5a059" class="w-16 h-8 rounded cursor-pointer">
-    </div>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@300;500;800&display=swap" rel="stylesheet">
     
-    <button onclick="saveData()" id="saveBtn" class="w-full bg-amber-600 hover:bg-amber-500 py-4 rounded-xl font-bold transition-colors">تحديث الصفحة الآن</button>
-</div>
-
-<script>
-async function saveData() {
-    const btn = document.getElementById('saveBtn');
-    btn.innerText = "جاري الحفظ...";
-    
-    const data = {
-        name: document.getElementById('name').value,
-        price: document.getElementById('price').value,
-        image: document.getElementById('image').value,
-        targetUrl: document.getElementById('targetUrl').value,
-        btnColor: document.getElementById('btnColor').value
-    };
-
-    try {
-        const res = await fetch('/api/update-config', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
+    <style>
+        /* تعريف متغيرات الألوان الديناميكية */
+        :root { --main-color: #c5a059; --bg-dark: #050505; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg-dark); color: #fff; overflow-x: hidden; margin: 0; }
+        .font-serif { font-family: 'Amiri', serif; }
         
-        if(res.ok) {
-            alert('✅ تم تحديث الصفحة بنجاح!');
-        } else {
-            alert('❌ حدث خطأ في الحفظ');
+        /* تصميم الزر العصري المتجاوب مع اللون المختلط */
+        .dynamic-btn { background: linear-gradient(135deg, var(--main-color), #ffffff); color: #000; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .dynamic-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 6px 20px rgba(255,255,255,0.2); }
+        
+        /* تأثير الزجاج الشفاف (Glassmorphism) */
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        
+        /* تصميم الخلفية البارالاكسية (Parallax) */
+        .parallax-bg { background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover; filter: brightness(0.4) saturate(1.2); }
+        
+        /* تأثير التحميل (Loader) */
+        .loader-ring { width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: var(--main-color); animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* فلاتر للألوان الديناميكية */
+        .dynamic-text { color: var(--main-color); }
+        .dynamic-border { border-color: var(--main-color); }
+    </style>
+</head>
+<body class="antialiased text-white">
+
+    <div id="loading-screen" class="fixed inset-0 z-[200] bg-[#050505] flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="loader-ring mb-5"></div>
+        <p class="text-white/60 tracking-[0.3em] animate-pulse text-[9px] uppercase">Exclusive Experience is Loading</p>
+    </div>
+
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div id="hero-bg" class="absolute inset-0 z-0 parallax-bg scale-110 transition-transform duration-[5000ms] ease-out"></div>
+        
+        <div class="relative z-10 text-center px-6 max-w-4xl">
+            <h2 class="dynamic-text tracking-[0.5em] text-[10px] md:text-xs uppercase mb-5 font-medium opacity-80" data-aos="fade-up">Collection Exclusive</h2>
+            
+            <h1 id="product-name" class="font-serif text-5xl md:text-8xl mb-7 leading-[1.1]" data-aos="fade-up" data-aos-delay="200">جاري التحميل...</h1>
+            
+            <div id="price-container" class="flex items-center justify-center gap-5 mb-10 opacity-0 transition-opacity duration-500" data-aos="fade-up" data-aos-delay="400">
+                <span class="h-[1px] w-16 bg-white/20"></span>
+                <p id="product-price" class="text-3xl md:text-4xl font-light tracking-widest text-white/90">...</p>
+                <span class="h-[1px] w-16 bg-white/20"></span>
+            </div>
+            
+            <a id="buy-link" href="#" class="dynamic-btn inline-block px-14 py-6 rounded-full text-xs font-bold uppercase tracking-[0.2em] hover:opacity-90" data-aos="zoom-in" data-aos-delay="600">
+                اطلب الآن
+            </a>
+        </div>
+        
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce opacity-50">
+            <div class="w-[1px] h-14 bg-white dynamic-border"></div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // تفعيل التحريكات
+        AOS.init({ duration: 900, once: true });
+
+        // وظيفة جلب البيانات الذكية التي تتجنب التخزين المؤقت (Cache)
+        async function loadData() {
+            try {
+                // إضافة متغير الوقت ?v= للحصول على أحدث نسخة دائماً
+                const response = await fetch('./config.json?v=' + Date.now());
+                if (!response.ok) throw new Error('تعذر تحميل البيانات');
+                
+                const data = await response.json();
+
+                // إذا وجدنا اسماً، فهذا يعني أن هناك بيانات صالحة
+                if (data.name) {
+                    // تحديث النصوص
+                    document.getElementById('product-name').innerText = data.name;
+                    document.getElementById('page-title').innerText = data.name + ' | تجربة حصرية';
+                    
+                    // التعامل مع السعر: إذا كان فارغاً نخفيه، وإذا كان موجوداً نظهره
+                    if (data.price) {
+                        document.getElementById('product-price').innerText = data.price + ' ' + (data.currency || 'ر.س');
+                        document.getElementById('price-container').classList.remove('opacity-0');
+                    } else {
+                        document.getElementById('price-container').style.display = 'none';
+                    }
+                    
+                    // تحديث الرابط المستهدف (واتساب، متجر، إلخ)
+                    document.getElementById('buy-link').href = data.url;
+                    
+                    // تحديث الصورة الخلفية إذا كانت متوفرة، وإلا نستخدم خلفية داكنة
+                    if (data.image) {
+                        document.getElementById('hero-bg').style.backgroundImage = `url('${data.image}')`;
+                    } else {
+                        document.getElementById('hero-bg').style.background = '#050505';
+                    }
+                    
+                    // تحديث لون الهوية الديناميكي
+                    if (data.btnColor) {
+                        document.documentElement.style.setProperty('--main-color', data.btnColor);
+                    }
+
+                    // إخفاء شاشة التحميل بتأثير سلس (Fade out)
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').classList.add('opacity-0');
+                        setTimeout(() => {
+                            document.getElementById('loading-screen').style.display = 'none';
+                            // إزالة تأثير القياس عند التحميل لبدء التحريك الطبيعي
+                            document.getElementById('hero-bg').classList.remove('scale-110');
+                        }, 700);
+                    }, 400); // مهلة صغيرة للشكل الجمالي
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('product-name').innerText = "حدث خطأ. يرجى ضبط الإعدادات.";
+                document.getElementById('loading-screen').style.display = 'none';
+            }
         }
-    } catch (e) {
-        alert('❌ تعذر الاتصال بالسيرفر');
-    } finally {
-        btn.innerText = "تحديث الصفحة الآن";
-    }
-}
-</script>
+
+        // تشغيل وظيفة الجلب بمجرد تحميل الصفحة بالكامل
+        window.onload = loadData;
+    </script>
+</body>
+</html>
